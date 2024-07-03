@@ -102,6 +102,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.ReactChoreographer;
 import com.facebook.react.modules.debug.interfaces.DeveloperSettings;
+import com.facebook.react.modules.systeminfo.AndroidInfoHelpers;
 import com.facebook.react.packagerconnection.RequestHandler;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 import com.facebook.react.uimanager.ReactRoot;
@@ -1515,16 +1516,35 @@ public class ReactInstanceManager {
     SystraceMessage.endSection(TRACE_TAG_REACT_JAVA_BRIDGE).flush();
   }
 
-  private @Nullable ReactInstanceManagerInspectorTarget getOrCreateInspectorTarget() {
-    if (mInspectorTarget == null && InspectorFlags.getFuseboxEnabled()) {
+  private static class InspectorTargetDelegateImpl
+      implements ReactInstanceManagerInspectorTarget.TargetDelegate {
+    // This weak reference breaks the cycle between the C++ HostTarget and the
+    // Java ReactInstanceManager, preventing memory leaks in apps that create
+    // multiple ReactInstanceManagers over time.
+    private WeakReference<ReactInstanceManager> mReactInstanceManagerWeak;
 
-      mInspectorTarget =
-          new ReactInstanceManagerInspectorTarget(
-              new ReactInstanceManagerInspectorTarget.TargetDelegate() {
-                @Override
-                public void onReload() {
-                  UiThreadUtil.runOnUiThread(() -> mDevSupportManager.handleReloadJS());
-                }
+    public InspectorTargetDelegateImpl(ReactInstanceManager inspectorTarget) {
+      mReactInstanceManagerWeak = new WeakReference<ReactInstanceManager>(inspectorTarget);
+    }
+
+    @Override
+    public Map<String, String> getMetadata() {
+      ReactInstanceManager reactInstanceManager = mReactInstanceManagerWeak.get();
+
+      return AndroidInfoHelpers.getInspectorHostMetadata(
+          reactInstanceManager != null ? reactInstanceManager.mApplicationContext : null);
+    }
+
+    @Override
+    public void onReload() {
+      UiThreadUtil.runOnUiThread(
+          () -> {
+            ReactInstanceManager reactInstanceManager = mReactInstanceManagerWeak.get();
+            if (reactInstanceManager != null) {
+              reactInstanceManager.mDevSupportManager.handleReloadJS();
+            }
+          });
+    }
 
                 @Override
                 public void onSetPausedInDebuggerMessage(@Nullable String message) {
