@@ -121,6 +121,7 @@ ReactInstanceManagerInspectorTarget::getMetadata() {
   };
 
   return {
+      .appDisplayName = getStringOptional("appDisplayName"),
       .appIdentifier = getStringOptional("appIdentifier"),
       .deviceName = getStringOptional("deviceName"),
       .integrationName = "Android Bridge (ReactInstanceManagerInspectorTarget)",
