@@ -84,6 +84,8 @@ import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.react.devsupport.DevSupportManagerFactory;
 import com.facebook.react.devsupport.InspectorFlags;
 import com.facebook.react.devsupport.ReactInstanceDevHelper;
+import com.facebook.react.devsupport.inspector.InspectorNetworkHelper;
+import com.facebook.react.devsupport.inspector.InspectorNetworkRequestListener;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
 import com.facebook.react.devsupport.interfaces.DevLoadingViewManager;
 import com.facebook.react.devsupport.interfaces.DevSupportManager;
@@ -1546,35 +1548,40 @@ public class ReactInstanceManager {
           });
     }
 
-                @Override
-                public void onSetPausedInDebuggerMessage(@Nullable String message) {
-                  if (message == null) {
-                    mDevSupportManager.hidePausedInDebuggerOverlay();
-                  } else {
-                    mDevSupportManager.showPausedInDebuggerOverlay(
-                        message,
-                        new PausedInDebuggerOverlayCommandListener() {
-                          @Override
-                          public void onResume() {
-                            UiThreadUtil.assertOnUiThread();
-                            if (mInspectorTarget != null) {
-                              mInspectorTarget.sendDebuggerResumeCommand();
-                            }
-                          }
-                        });
-                  }
+    @Override
+    public void onSetPausedInDebuggerMessage(@Nullable String message) {
+      ReactInstanceManager reactInstanceManager = mReactInstanceManagerWeak.get();
+      if (reactInstanceManager == null) {
+        return;
+      }
+      if (message == null) {
+        reactInstanceManager.mDevSupportManager.hidePausedInDebuggerOverlay();
+      } else {
+        reactInstanceManager.mDevSupportManager.showPausedInDebuggerOverlay(
+            message,
+            new PausedInDebuggerOverlayCommandListener() {
+              @Override
+              public void onResume() {
+                UiThreadUtil.assertOnUiThread();
+                if (reactInstanceManager.mInspectorTarget != null) {
+                  reactInstanceManager.mInspectorTarget.sendDebuggerResumeCommand();
                 }
-              });
+              }
+            });
+      }
     }
 
-    return mInspectorTarget;
+    @Override
+    public void loadNetworkResource(String url, InspectorNetworkRequestListener listener) {
+      InspectorNetworkHelper.loadNetworkResource(url, listener);
+    }
   }
 
-  @ThreadConfined(UI)
-  private void destroyInspectorHostTarget() {
-    if (mInspectorTarget != null) {
-      mInspectorTarget.close();
-      mInspectorTarget = null;
+  private @Nullable ReactInstanceManagerInspectorTarget getOrCreateInspectorTarget() {
+    if (mInspectorTarget == null && InspectorFlags.getFuseboxEnabled()) {
+
+      mInspectorTarget =
+          new ReactInstanceManagerInspectorTarget(new InspectorTargetDelegateImpl(this));
     }
   }
 }
