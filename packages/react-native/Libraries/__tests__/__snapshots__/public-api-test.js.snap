@@ -4075,15 +4075,9 @@ exports[`public API should not change unintentionally Libraries/Core/setUpErrorH
 
 exports[`public API should not change unintentionally Libraries/Core/setUpGlobals.js 1`] = `""`;
 
-exports[`public API should not change unintentionally Libraries/Core/setUpIntersectionObserver.js 1`] = `""`;
-
-exports[`public API should not change unintentionally Libraries/Core/setUpMutationObserver.js 1`] = `""`;
-
 exports[`public API should not change unintentionally Libraries/Core/setUpNavigator.js 1`] = `""`;
 
 exports[`public API should not change unintentionally Libraries/Core/setUpPerformance.js 1`] = `""`;
-
-exports[`public API should not change unintentionally Libraries/Core/setUpPerformanceObserver.js 1`] = `""`;
 
 exports[`public API should not change unintentionally Libraries/Core/setUpReactDevTools.js 1`] = `""`;
 
