@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "exports": {
-    ".": "./src/index.js",
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "@isaacs/ttlcache": "^1.4.1",
-    "@react-native/debugger-frontend": "0.76.0-main",
+    "@react-native/debugger-frontend": "file:../debugger-frontend",
     "chrome-launcher": "^0.15.2",
     "chromium-edge-launcher": "^0.2.0",
     "connect": "^3.6.5",

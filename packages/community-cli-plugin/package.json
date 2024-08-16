@@ -15,15 +15,15 @@
   },
   "license": "MIT",
   "exports": {
-    ".": "./src/index.js",
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@react-native/dev-middleware": "0.76.0-main",
-    "@react-native/metro-babel-transformer": "0.76.0-main",
+    "@react-native/dev-middleware": "file:../dev-middleware",
+    "@react-native/metro-babel-transformer": "file:../react-native-babel-transformer",
     "chalk": "^4.0.0",
     "execa": "^5.1.1",
     "metro": "^0.80.3",
