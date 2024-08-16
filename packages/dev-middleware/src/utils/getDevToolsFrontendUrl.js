@@ -34,8 +34,8 @@ export default function getDevToolsFrontendUrl(
     (options?.relative === true ? '' : devServerUrl) +
     '/debugger-frontend/' +
     (options?.useFuseboxEntryPoint === true
-      ? 'rn_fusebox.html'
-      : 'rn_inspector.html');
+      ? 'rn_inspector.html'
+      : 'rn_fusebox.html'); // CHANGE: swapped these so fusebox entrypoint is what is launched for app
 
   const searchParams = new URLSearchParams([
     [wsParam.key, wsParam.value],
