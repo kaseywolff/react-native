@@ -23,9 +23,7 @@
   "engines": {
     "node": ">=18"
   },
-  "bin": {
-    "react-native": "cli.js"
-  },
+  "bin": "cli.js",
   "types": "types",
   "jest-junit": {
     "outputDirectory": "reports/junit",
@@ -114,7 +112,7 @@
     "@react-native-community/cli-platform-ios": "14.0.0",
     "@react-native/assets-registry": "0.75.2",
     "@react-native/codegen": "0.75.2",
-    "@react-native/community-cli-plugin": "0.75.2",
+    "@react-native/community-cli-plugin": "file:../community-cli-plugin",
     "@react-native/gradle-plugin": "0.75.2",
     "@react-native/js-polyfills": "0.75.2",
     "@react-native/normalize-colors": "0.75.2",
